@@ -19,4 +19,9 @@ with open(CSV_FILE, newline='') as csvfile:
 
     cursor.execute(f"CREATE DATABASE IF NOT EXISTS `{db_name}`;")
     cursor.execute(f"CREATE USER IF NOT EXISTS '{username}'@'IDENTIFIED BY '(password)';")
-    cursor.execute(
+    cursor.execute(f"GRANT ALL PRIVILEGES ON `{db_name}` to '{username}'@'%';")
+    cursor.execute("FLUSH PRIVELEGES;")
+connection.commit()
+cursor.close()
+connection.close()
+print ("All students created successfully")
