@@ -1,6 +1,6 @@
-import CSV
+import csv
 import mysql.connector
-
+CSV_FILE = "students.csv"
 connection = mysql.connector.connect (
   host = "localhost",
   user = "root",
@@ -18,8 +18,8 @@ with open(CSV_FILE, newline='') as csvfile:
     print (f"Creating user {username} and database {db_name}...")
 
     cursor.execute(f"CREATE DATABASE IF NOT EXISTS `{db_name}`;")
-    cursor.execute(f"CREATE USER IF NOT EXISTS '{username}'@'IDENTIFIED BY '(password)';")
-    cursor.execute(f"GRANT ALL PRIVILEGES ON `{db_name}` to '{username}'@'%';")
+    cursor.execute(f"CREATE USER IF NOT EXISTS '{username}'@'%''IDENTIFIED BY '(password)';")
+    cursor.execute(f"GRANT ALL PRIVILEGES ON `{db_name}`.* TO '{username}'@'%';")
     cursor.execute("FLUSH PRIVELEGES;")
 connection.commit()
 cursor.close()
