@@ -3,8 +3,8 @@ import mysql.connector
 CSV_FILE = "students.csv"
 connection = mysql.connector.connect (
   host = "localhost",
-  user = "root",
-  password = "P@ssw0rd!"
+  user = "professor214",
+  password = "profpass"
 )
 cursor = connection.cursor()
 
