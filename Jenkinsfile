@@ -10,19 +10,22 @@ pipeline {
         git branch: 'main', url: 'https://github.com/miamioh-cit/214SQL_automation.git'
       }
     }
-    stage('Run student creation script') {
+    stage('Copy files and run script') {
       steps {
         withCredentials([
           usernamePassword(credentialsId: 'SQL VM Creation', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASS'),
           usernamePassword(credentialsId: '214SQL Login', usernameVariable: 'MYSQL_USER', passwordVariable: 'MYSQL_PASS')
         ]) {
-          sh """
-            sshpass -p '${SSH_PASS}' ssh -o StrictHostKeyChecking=no ${SSH_USER}@${MYSQL_HOST} '
-              cd ${WORK_DIR} &&
-              git pull &&
-              python3 create_students_mysql.py ${MYSQL_USER} ${MYSQL_PASS}
-            '
-          """
+          sh '''
+            # Copy the Python script and CSV to the server
+            sshpass -p "$SSH_PASS" scp -o StrictHostKeyChecking=no create_students_mysql.py students.csv $SSH_USER@$MYSQL_HOST:$WORK_DIR/
+            
+            # Run the script
+            sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no $SSH_USER@$MYSQL_HOST "
+              cd $WORK_DIR &&
+              python3 create_students_mysql.py $MYSQL_USER $MYSQL_PASS
+            "
+          '''
         }
       }
     }
