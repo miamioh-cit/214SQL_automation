@@ -18,9 +18,9 @@ pipeline {
         ]) {
           sh """
             sshpass -p '${SSH_PASS}' ssh -o StrictHostKeyChecking=no ${SSH_USER}@${MYSQL_HOST} '
-              cd ${WORK_DIR} &&
-              git pull &&
-              python3 create_students_mysql.py ${MYSQL_USER} ${MYSQL_PASS}
+              //cd ${WORK_DIR} &&
+              //git pull &&
+              //python3 create_students_mysql.py ${MYSQL_USER} ${MYSQL_PASS}
             '
           """
         }
