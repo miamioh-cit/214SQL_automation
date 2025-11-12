@@ -1,39 +1,38 @@
 pipeline {
   agent any
-
   environment {
     MYSQL_HOST = "10.3.48.245"
-    MYSQL_USER = "professor214"
-    MYSQL_PASS = "profpass"
-    WORK_DIR = "opt/db_class"
-
+    WORK_DIR = "/opt/db_class"
   }
-
   stages {
-    stage ('checkout code') {
+    stage('Checkout code') {
       steps {
         git branch: 'main', url: 'https://github.com/miamioh-cit/214SQL_automation.git'
       }
     }
     stage('Run student creation script') {
-      steps { 
-        // SSH into the MySQL server and run the python script
-        sh"""
-        ssh -o StrictHostKeyChecking=no ubuntu@${MYSQL_HOST} '
-            cd ${WORK_DIR} &&
-            git pull &&
-            python3 create_students_mysql.py
-          '
+      steps {
+        withCredentials([
+          sshUserPrivateKey(credentialsId: 'SQL VM Creation', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER'),
+          usernamePassword(credentialsId: '214SQL Login', usernameVariable: 'MYSQL_USER', passwordVariable: 'MYSQL_PASS')
+        ]) {
+          sh """
+            ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${SSH_USER}@${MYSQL_HOST} '
+              cd ${WORK_DIR} &&
+              git pull &&
+              python3 create_students_mysql.py ${MYSQL_USER} ${MYSQL_PASS}
+            '
           """
+        }
       }
     }
   }
   post {
     success {
-      echo"✅ Student databases and accounts created successfully!"
-        }
-        failure {
-            echo "❌ Pipeline failed — check MySQL connection or permissions."
-        }
+      echo "✅ Student databases and accounts created successfully!"
     }
+    failure {
+      echo "❌ Pipeline failed — check MySQL connection or permissions."
+    }
+  }
 }
