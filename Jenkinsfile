@@ -13,11 +13,11 @@ pipeline {
     stage('Run student creation script') {
       steps {
         withCredentials([
-          sshUserPrivateKey(credentialsId: 'SQL VM Creation', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER'),
+          usernamePassword(credentialsId: 'SQL VM Creation', usernameVariable: 'SSH_USER', passwordVariable: 'SSH_PASS'),
           usernamePassword(credentialsId: '214SQL Login', usernameVariable: 'MYSQL_USER', passwordVariable: 'MYSQL_PASS')
         ]) {
           sh """
-            ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${SSH_USER}@${MYSQL_HOST} '
+            sshpass -p '${SSH_PASS}' ssh -o StrictHostKeyChecking=no ${SSH_USER}@${MYSQL_HOST} '
               cd ${WORK_DIR} &&
               git pull &&
               python3 create_students_mysql.py ${MYSQL_USER} ${MYSQL_PASS}
