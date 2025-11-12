@@ -30,7 +30,7 @@ pipeline {
   }
   post {
     sucess {
-      echo" "✅ Student databases and accounts created successfully!"
+      echo"✅ Student databases and accounts created successfully!"
         }
         failure {
             echo "❌ Pipeline failed — check MySQL connection or permissions."
