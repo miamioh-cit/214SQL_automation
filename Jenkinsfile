@@ -1,7 +1,7 @@
 pipeline {
   agent any
   environment {
-    MYSQL_HOST = "10.3.48.245"
+    MYSQL_HOST = "10.48.229.129"
     WORK_DIR = "/opt/db_class"
   }
   stages {
