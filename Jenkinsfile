@@ -29,7 +29,7 @@ pipeline {
     }
   }
   post {
-    sucess {
+    success {
       echo"✅ Student databases and accounts created successfully!"
         }
         failure {
